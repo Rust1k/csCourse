@@ -8,6 +8,8 @@ I.
 ванию длин строк, а строки одинаковой длины — в лексико-
 графическом порядке по возрастанию.
 
+list.TakeWhile(e => e.Length <= L).Where(e => Char.IsLetter(e, e.Length - 1)).OrderBy(e => e.Length).ThenBy(e => e);
+
 2. Дано целое число K (> 0) и целочисленная по-
 следовательность A. Найти теоретико-множественную раз-
 ность двух фрагментов A: первый содержит все четные чис-
@@ -15,6 +17,7 @@ I.
 ми K. В полученной последовательности (не содержащей
 одинаковых элементов) поменять порядок элементов на об-
 ратный.
+list1.Where(e => e % 2 == 0).Except(list1.Where((e, index) => index > K)).Distinct().Reverse();
 
 3. Дана последовательность непустых строк A. По-
 лучить последовательность символов, каждый элемент кото-
@@ -104,6 +107,19 @@ C: <Скидка (в процентах)> <Код потребителя>
 упорядочивать по возрастанию количества магазинов, а при
 равном количестве — по возрастанию кодов потребителей.
 
+С.GroupBy(discount => discount.Customer)
+	.Select(discount => new { 
+                             Customer = group.Key, 
+                             Count = group.Count() 
+                        })
+	.AddRange(A.Where(c => C.Select(discount => discount.Customer).Contains(c.Code))
+			.Select(cust => new { 
+                             Customer = cust.Code, 
+                             Count = 0 
+                        })
+	.OrderBy(discount => discount.Count)
+	.ThenBy(discount => discount.Customer));**
+
 2. Даны последовательности A и C, включающие сле-
 дующие поля:
 A: <Улица проживания> <Код потребителя>
@@ -126,6 +142,22 @@ C: <Название магазина> <Скидка (в
 дочивать по названиям магазинов в алфавитном порядке, а
 для одинаковых названий магазинов — по возрастанию но-
 меров года.
+
+C.Join(   A,	      //  inner sequence
+          e => e.CustomerCode, 		  //  outerKeySelector
+          o => o.CustomerCode, 		  //  innerKeySelector
+          (e, o) => new       //  resultSelector
+          {
+            CustomerBirth = o.CustomerBirth,
+            ShopCode = o.ShopCode,
+	    Discount = o.Discount
+          })
+	.GroupBy(discount => Tuple.Create(discount.CustomerBirth, discount.ShopCode))
+	.Select (g => new {
+            Average = g.Average (p => p.Discount), 
+            ShopCode = g.Key.ShopCode, 
+            CustomerBirth = g.Key.CustomerBirth,
+         });
 
 3. Даны последовательности B и D, включающие сле-
 дующие поля:
