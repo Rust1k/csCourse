@@ -1,4 +1,5 @@
 1. Проделать https://msdn.microsoft.com/ru-ru/library/8wbhsy70(v=vs.100).aspx
+https://www.c-sharpcorner.com/UploadFile/29d7e0/steps-to-create-a-simple-web-service-and-use-it-in-Asp-Net/
 2. Написать программу, которая считывает данные погоды для городов по соответствующему API: https://developer.yahoo.com/weather/?guccounter=1
 И выводит полученные результаты в консоль или десктопное приложение.
 Создать на основе полученного кода веб-службу, которая принимает в качестве параметра наименование городов, 
