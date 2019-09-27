@@ -1,0 +1,116 @@
+﻿
+1. IPAddress:
+
+	IPHostEntry host2 = Dns.GetHostEntry("google.com");
+	Console.WriteLine(host2.HostName);
+	foreach (IPAddress ip in host2.AddressList)
+		Console.WriteLine(ip.ToString());
+		
+2. WebClient
+	
+	WebClient client = new WebClient();
+	client.DownloadFile("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", "info.pdf");
+	Console.WriteLine("Файл загружен");
+	
+	// ----------------------
+	// с помощью StreamReader
+	WebClient client = new WebClient();
+             
+	using (Stream stream = client.OpenRead("http://somesite.com/sometext.txt"))
+	{
+		using (StreamReader reader = new StreamReader(stream))
+		{
+			string line = "";
+			while ((line = reader.ReadLine()) != null)
+			{
+				Console.WriteLine(line);
+			}
+		}
+	}
+		 
+	Console.WriteLine("Файл загружен");
+	Console.Read();
+	// ----------------------
+	
+	// асинхронно
+	static void Main(string[] args)
+	{
+		DownloadFileAsync().GetAwaiter();
+
+		Console.WriteLine("Файл загружен");
+		Console.Read();
+	}
+
+	private static async Task DownloadFileAsync()
+	{
+		WebClient client = new WebClient();
+		await client.DownloadFileTaskAsync(new Uri("https://www.w3.org/TR/PNG/iso_8859-1.txt"), "mytxtFile.txt");
+	}
+
+3. WebRequest и WebResponse
+
+	// ---------------------------------
+	WebRequest request = WebRequest.Create("https://www.w3.org/TR/PNG/iso_8859-1.txt");
+	WebResponse response = request.GetResponse();
+	using (Stream stream = response.GetResponseStream())
+	{
+		using (StreamReader reader = new StreamReader(stream))
+		{
+			string line = "";
+			while ((line = reader.ReadLine()) != null)
+			{
+				Console.WriteLine(line);
+			}
+		}     
+	}
+	response.Close();
+	Console.WriteLine("Запрос выполнен");
+	Console.Read();
+
+	// ---------------------------------
+
+	Некоторые важные свойства класса HttpWebRequest:
+
+	TimeOut: указывает на время в миллисекундах, допустимое для ожидания ответа от сервера (ожидание выполнения методов GetResponse() и GetRequestStream()). По умолчанию имеет значение 100 000 миллисекунд (100 секунд)
+
+	KeepAlive: при значении true позволяет устанавливать постоянные подключения к серверу. В итоге для нескольких запросов можно будет использовать одно и то же подключение, что сэкономит время на открытие/закрытие нового подключения. По умолчанию имеет значение true.
+
+	AllowAutoRedirect: указывает, должен ли запрос следовать ответам переадресации. При значении true запрос автоматически будет использовать переадресацию. Чтобы запретить переадресацию, надо установить значение false. По умолчанию имеет значение true.
+
+	Также можно использовать свойство MaximumAutomaticRedirections, которое устанавливает максимальное количество переадресаций
+
+	Credentials: представляет объект NetworkCredential, который устанавливает идентификацию пользователя (логин, пароль)
+
+	Некоторые важные свойства класса HttpWebResponse:
+
+	ContentLength: значение заголовка Content-Length, возвращаемого с ответом, и возвращает длину содержимого в байтах в запросе (длина заголовков в этот объем не включается)
+
+	Cookies: представляет объект CookieCollection и возвращает файлы куки, которые связаны с ответом
+
+	Headers: Возвращает заголовки, связанные с данным ответом
+
+	LastModified: возвращает дату и время последнего изменения содержимого ответа
+	
+	// ---------------------------------
+	// установка логина и пароля при базовой http идентификации
+	
+	HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.httpwatch.com/httpgallery/authentication/authenticatedimage/default.aspx?0.8850359560404413");
+	request.Credentials = new NetworkCredential("httpwatch ", "мой пароль"); 
+	HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+	// в ответ вы получите картинку в формате gif, которую нужно сохранить и посмотреть
+	
+	// ---------------------------------
+	// получение и вывод заголовков запроса
+	HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.w3.org/TR/PNG/iso_8859-1.txt");
+	HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+	WebHeaderCollection headers = response.Headers;
+	for(int i=0; i< headers.Count; i++)
+	{
+		Console.WriteLine("{0}: {1}", headers.GetKey(i), headers[i]);
+	}
+	response.Close();
+	
+Задание: 
+1. Сохранить все картинки на данной html странице (дан url).
+2. написать скрипт, который по данному url адресу скачает саму страницу, и все страницы, на которые ссылается эта страница.
+	
