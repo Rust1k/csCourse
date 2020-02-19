@@ -9,6 +9,13 @@ namespace EmptyWeb
 {
 	public class HomeController
 	{
+		private IStorage storage;
+
+		public HomeController(IStorage storage)
+		{
+			this.storage = storage;
+		}
+
 		public async Task GetForm(HttpContext context)
 		{
 			await context.Response.WriteAsync(File.ReadAllText("Views\\index.html"));
@@ -46,6 +53,20 @@ namespace EmptyWeb
 			File.AppendAllLines(txtFileName, new string[] {name, text});
 			
 			await context.Response.WriteAsync("New Entry was added");
+		}
+
+		public async Task GetPosts(HttpContext context)
+		{
+			string filePath = "Files";
+
+			string[] files = Directory.GetFiles(filePath, "*.txt", SearchOption.AllDirectories);
+
+			foreach (var file in files)
+			{
+				
+			}
+
+			await context.Response.WriteAsync("!");
 		}
 	}
 }

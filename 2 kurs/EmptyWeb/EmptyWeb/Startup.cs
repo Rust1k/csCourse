@@ -17,10 +17,11 @@ namespace EmptyWeb
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddTransient<IMessageSender, EmailMessageSender>();
+			services.AddTransient<IStorage, BlogEntriesStorage>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStorage storage)
 		{
 			if (env.IsDevelopment())
 			{
@@ -31,8 +32,8 @@ namespace EmptyWeb
 
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGet("/", new HomeController().GetForm);
-				endpoints.MapPost("/Home/AddEntry", new HomeController().AddEntry);
+				endpoints.MapGet("/", new HomeController(storage).GetForm);
+				endpoints.MapPost("/Home/AddEntry", new HomeController(storage).AddEntry);
 			});
 			
 		}
