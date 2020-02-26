@@ -6,18 +6,18 @@ using EmptyWeb.Models;
 
 namespace EmptyWeb
 {
-	public class BlogEntriesStorage : IStorage
+	public class ItemsStorage<T> : IStorage<T>
 	{
-		public IEnumerable<BlogEntry> BlogEntries { get; set; }
+		public List<T> Items { get; set; }
 
 		public void Load()
 		{
-
+			// загрузка всех записей блога из директории
 		}
 
 		public void Save()
 		{
-
+			// сохранение вновь добавленных записей
 		}
 	}
 }

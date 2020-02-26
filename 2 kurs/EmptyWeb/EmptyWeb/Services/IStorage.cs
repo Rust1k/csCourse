@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace EmptyWeb
 {
-	public interface IStorage
+	public interface IStorage<T>
 	{
+		public void Load();
+		public void Save();
 	}
 }

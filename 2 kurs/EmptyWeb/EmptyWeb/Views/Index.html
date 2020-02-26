@@ -5,11 +5,14 @@
     <title></title>
 </head>
 <body>
-<form action="/Home/AddEntry/" method="post"  enctype="multipart/form-data">
-    Наименование: <input name="name" /> <br />
-    Текст: <textarea name="text"></textarea> <br />
-    Картинка: <input name="image" type="file" accept="image/*"/> <br />
-    <input type="submit"/>
-</form>
+    <form action="/Home/AddEntry/" method="post" enctype="multipart/form-data">
+        Наименование: <input name="name" /> <br />
+        <span for="name"><!-- name_error_msg --></span>
+        Текст: <textarea name="text"></textarea> <br />
+        <span for="text"><!-- text_error_msg --></span>
+        Картинка: <input name="image" type="file" accept="image/*" /> <br />
+        <span for="text"><!-- text_error_msg --></span>
+        <input type="submit" />
+    </form>
 </body>
 </html>

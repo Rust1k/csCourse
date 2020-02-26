@@ -7,8 +7,13 @@ namespace EmptyWeb.Models
 {
 	public class BlogEntry
 	{
+		[NotEmpty]
 		public string Name { get; set; }
+		
+		[NotEmpty]
 		public string Text { get; set; }
+		
 		public string FileName { get; set; }
+
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EmptyWeb.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,11 @@ namespace EmptyWeb
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddTransient<IMessageSender, EmailMessageSender>();
-			services.AddTransient<IStorage, BlogEntriesStorage>();
+			services.AddTransient<IStorage<BlogEntry>, ItemsStorage<BlogEntry>>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStorage storage)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IStorage<BlogEntry> storage)
 		{
 			if (env.IsDevelopment())
 			{
@@ -33,6 +34,7 @@ namespace EmptyWeb
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapGet("/", new HomeController(storage).GetForm);
+				endpoints.MapGet("/Home/Entry/{EntryName}", new HomeController(storage).EditEntry);
 				endpoints.MapPost("/Home/AddEntry", new HomeController(storage).AddEntry);
 			});
 			
