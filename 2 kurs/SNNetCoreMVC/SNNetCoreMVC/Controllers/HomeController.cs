@@ -9,6 +9,7 @@ using SNNetCoreMVC.Models;
 
 namespace SNNetCoreMVC.Controllers
 {
+	[ServiceFilter(typeof(LoggingActionFilter))]
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
@@ -21,6 +22,20 @@ namespace SNNetCoreMVC.Controllers
 		public IActionResult Index()
 		{
 			return View();
+		}
+
+		public IActionResult Calculate()
+		{
+			ICalculator calc = new CalculatorFactory(_logger).CreateCalculator();
+
+			return View(calc.Add(1, 2));
+		}
+
+		public IActionResult Calc()
+		{
+			Calc calc = new Calc();
+
+			return View(calc.Multiply(1, 20));
 		}
 
 		public IActionResult Privacy()

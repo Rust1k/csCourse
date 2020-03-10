@@ -31,6 +31,8 @@ namespace SNNetCoreMVC
 				options.UseNpgsql(connection));
 
 			services.AddControllersWithViews();
+
+			services.AddScoped<LoggingActionFilter>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
