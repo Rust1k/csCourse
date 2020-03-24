@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,23 @@ namespace SNNetCoreMVC.Controllers
     public class PostsController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly IAuthorizationService _authService;
 
-        public PostsController(ApplicationContext context)
+        public PostsController(ApplicationContext context, IAuthorizationService service)
         {
             _context = context;
+            _authService = service;
         }
 
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Posts.ToListAsync());
+	        var authResult = await _authService.AuthorizeAsync(User, new Post(), "PostTimeViewPolicy");
+
+	        if (authResult.Succeeded)
+		        return View(await _context.Posts.ToListAsync());
+	        else
+		        return new ForbidResult();
         }
 
         // GET: Posts/Details/5
